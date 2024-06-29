@@ -1,1 +1,2 @@
 # Energy_density_spectrum_FOGWs
+*Title* is a toolkit to determine whether the first-order gravitational wave spectral energy density of the given scenario had travelled through a particular post-inflationary scenario realizes a detection in the current/upcoming GW detector. The toolkit is flexible; able to work with numerous (but finite) epochs with differing equation of state during them. We nonetheless make a few assumptions: % Write assumptions here
