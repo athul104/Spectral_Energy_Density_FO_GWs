@@ -1,5 +1,5 @@
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-#					                     	 Firsr-order Gravitational Wave Energy Density Spectrum - Multi-epoch Reheating
+#					                     	 Firsr-order Gravitational Wave Energy Density Spectrum
 #------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
 # Owner:         Athul K. Soman 
 # Collaborators: Swagat S. Mishra, Mohammed Shafi, Soumen Basak
@@ -9,7 +9,7 @@
 # from one epoch to the next epoch is assumed to be instantaneous. This code is associated with the paper "Inflationary Gravitational Waves as a probe of the unknown 
 # post-inflationary primordial Universe".
 
-# The code plots and save the image in the same folder where the code is stored. The code also plots the power-law integrated sensitivity curves (PLIS) for various GW detectors. The
+# The code plots and saves the image in the same folder where the code is stored. The code also plots the power-law integrated sensitivity curves (PLIS) for various GW detectors. The
 # data for the PLIS is taken from https://zenodo.org/records/3689582 in relation to the paper https://arxiv.org/abs/2002.04615. The instructions to provide the inputs
 # are given in the comments. Your inputs must be provided only in the section "YOU HAVE TO PROVIDE INPUT ONLY HERE". Please do not change anything else in the code.
 
