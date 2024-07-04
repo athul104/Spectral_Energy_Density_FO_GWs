@@ -1,23 +1,22 @@
-#------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
-#					                     	 Firsr-order Gravitational Wave Energy Density Spectrum
-#------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------#
+#					                     	 Firsr-order Gravitational Wave Energy Density Spectrum - Multi-epoch Reheating
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------#
 # Owner:         Athul K. Soman 
 # Collaborators: Swagat S. Mishra, Mohammed Shafi, Soumen Basak
-#------------------------------------------------------------------------------------------------------------------------------------------------------------------------#
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-# This python script is to compute the energy density spectrum of first-order inflationary gravitational waves (GWs) for a multi-epoch reheating scenario. The transition
-# from one epoch to the next epoch is assumed to be instantaneous. This code is associated with the paper "Inflationary Gravitational Waves as a probe of the unknown 
-# post-inflationary primordial Universe".
+# This python script is to compute the energy density spectrum of first-order inflationary gravitational waves (GWs) for a multi-epoch reheating scenario. The 
+# transition from one epoch to the next epoch is assumed to be instantaneous. This code is associated with the paper "Inflationary Gravitational Waves as a 
+# probe of the unknown post-inflationary primordial Universe".
 
-# The code plots and saves the image in the same folder where the code is stored. The code also plots the power-law integrated sensitivity curves (PLIS) for various GW detectors. The
-# data for the PLIS is taken from https://zenodo.org/records/3689582 in relation to the paper https://arxiv.org/abs/2002.04615. The instructions to provide the inputs
-# are given in the comments. Your inputs must be provided only in the section "YOU HAVE TO PROVIDE INPUT ONLY HERE". Please do not change anything else in the code.
-
-
+# The code plots the image and saves it to the same folder as the code. The code also plots the power-law integrated sensitivity curves (PLIS) for various GW 
+# detectors. The data for the PLIS is taken from https://zenodo.org/records/3689582 in relation to the paper https://arxiv.org/abs/2002.04615. The instructions 
+# to provide the inputs are given in the comments. Your inputs must be provided only in the section "YOU HAVE TO PROVIDE INPUT ONLY HERE". 
 
 
-# The required packages are numpy, matplotlib, scipy, mpmath, shapely, and fractions.
+
 #!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# The required packages are numpy, matplotlib, scipy, mpmath, shapely, and fractions.
 # Importing the required packages
 import numpy as np
 import matplotlib.pyplot as plt
@@ -63,46 +62,46 @@ plt.rcParams['axes.linewidth'] = 1
 
 
 # YOU HAVE TO PROVIDE INPUT ONLY HERE
-##############################################################################################################################################################
+#################################################################################################################################################################
 # Provide the folder path where this code is stored
 Folder_path = 'C:/Users/ATHUL/Cosmology/Major Project/Codes/Phase 2'
 
-# Provide the equation of state of each epoch during reheating in the follwing list in order from the earliest epoch to the latest epoch
-# Use Fraction() to provide fractions. For example, Fraction(1,3) for radiation domination epoch. This will make the labelling to appear as w = 1/3
-# The values must be between -0.28 and 0.99 as we have done in our paper.
+# Provide the equation of state of each epoch during reheating in the following list in order from the earliest epoch to the latest epoch
+# Use Fraction() to provide fractions. For example, Fraction(1,3) for radiation-dominated epoch. This will make the labelling to appear as w = 1/3
+# The values must be between -0.28 and 0.99.
 EoS_list = [0.8, Fraction(1,3), 0.5] # [w_1, w_2, w_3, ..., w_n]  
 
 
-# List for the energy scale of the universe in GeV at which you want each of the epochs to end (except the last epoch) during reheating in order from the earliest 
+# List the energy scale of the universe in GeV at which you want each of the epochs to end (except the last epoch) during reheating in order from the earliest 
 # epoch to the second last epoch.
-# For example, if you have 3 epochs during reheating, you have to provide 2 values in the list. The first value is the energy scale at which the first epoch ends,
-# the second value is the energy scale at which the second epoch ends. 
+# For example, if you have 3 epochs during reheating, you have to provide 2 values in the list. The first value is the energy scale at which the first epoch 
+# ends, and the second value is the energy scale at which the second epoch ends. 
 
 # Please provide the energy scales to be greater than 10^2 GeV.
 # This is because above E >= 10^2 GeV, the relativistic degrees of freedom are almost constant, g_star = g_s = 106.75, and we use 
-# this value in the conversion of the energy scales to temperature in GeV. If the energy scale is less than 10^2 GeV, the data will be inaccurate.
+# this value in converting the energy scales to temperature in GeV. If the energy scale is less than 10^2 GeV, the data will be inaccurate.
 Energy_list = [10**8, 10**5] #GeV #[E_1, E_2, ...., E_{n-1}]
 
 
-# Provide the temperature acheived in GeV at the end of reheating.
-# In accordance to the BBN constarint, the temperature at the end of reheating must be greater than 10^(-3) GeV, i.e., T_Rh > T_BBN = 10^(-3) GeV]
+# Provide the temperature acheived at the end of reheating in GeV.
+# In accordance to the BBN constarint, the temperature at the end of reheating must be greater than 10^(-3) GeV, i.e., T_Rh > T_BBN = 10^(-3) GeV
 T_Rh = 0.45 #GeV
 
 
-# Provide either the value of tensor-to-scalar ratio r, or the value of energy scale during inflation E_inf in GeV. Comment out the other one.
+# Provide either the value of tensor-to-scalar ratio 'r', or the value of energy scale during inflation 'E_inf' in GeV. Comment the other one out.
 r = 0.001
 # E_inf = 10**16 #GeV
 
 
-# What method do you want to use for checking the BBN constraint?
+# Choose the method you want to use for checking the BBN constraint.
 # 1. If you want to cross check the results we presented or want to use the weaker constraint which we have used in our paper [see Eq. (3.59)], provide 'weaker'
-# 2. If you are changing the values of 'r' ('E_inf') and/or 'T_Rh' from the values we have used in our paper, we advise you to use the intersection method, which
-#    checks the intersection of the GW energy density spectrum with the BBN constraint curve. Provide 'intersection' for this.
+# 2. If you are changing the values of 'r' (or 'E_inf') and/or 'T_Rh' from the values we have used in our paper, we advise you to use the intersection method, 
+#    which checks whether the GW energy density spectrum intersects with the BBN constraint curve. Provide 'intersection' for this.
 BBN_method = 'weaker' #['weaker', 'intersection']
 
 # Provide the number of data points you want in the plot of GW energy density spectrum
 num_of_points = 1000
-##############################################################################################################################################################
+#################################################################################################################################################################
 
 # defining the values of the constants
 Omega_rad_0 = 4.16*10**(-5)                         # Present radiation density parameter (This is actually Omega_{rad, 0}*h^2) [see Eq. (E.7)]
@@ -111,7 +110,7 @@ m_P = 2.44*10**18        #GeV                         Reduced Planck mass
 BBN_constraint = 1.13*10**(-6)                      # Upper bound on Omega_GW from BBN observations [see Eq. (3.61)]
 A_S = 2.1*10**(-9)                                  # Amplitude of scalar perturbations on CMB scales [Planck 2018: https://arxiv.org/abs/1807.06209]
 
-#.....................................................................................................................................................................
+#................................................................................................................................................................
 
 try:
     r
@@ -140,7 +139,7 @@ except NameError:
         print('Please provide either the value of tensor-to-scalar ratio r, or the value of energy scale during inflation E_inf in GeV')
         exit()
    
-#.....................................................................................................................................................................
+#.................................................................................................................................................................
 
 #Checking the validity of the equations of state provided
 for i in range(len(EoS_list)):
@@ -165,7 +164,7 @@ if E_inf < Energy_list[0]:
     print('Please provide a higher value for tensor-to-scalar ratio r')
     exit()
 
-#.....................................................................................................................................................................
+#.................................................................................................................................................................
 
 # Loading the data for the effective relativistic degrees of freedom in energy and entropy. The data is in the form of [Temperature in GeV, g_star, g_s]. 
 Eff_rel_dof_data = np.loadtxt(Folder_path + '/eff_rel_dof.txt')
@@ -175,7 +174,7 @@ Temp_in_GeV = np.array(Eff_rel_dof_data[:,0])
 Eff_rel_dof_in_energy = np.array(Eff_rel_dof_data[:,1])
 Eff_rel_dof_in_entropy = np.array(Eff_rel_dof_data[:,2])
 
-#.....................................................................................................................................................................
+#.................................................................................................................................................................
 
 def Temp(E):
     """Function to convert energy scale (E >= 10**2 GeV) of universe to effective temperature in GeV
@@ -185,7 +184,7 @@ def Temp(E):
 
 vec_Temp = np.vectorize(Temp)   # Vectorizing the function Temp
 
-#.....................................................................................................................................................................
+#.................................................................................................................................................................
 
 def g_star_k(T):
     '''This function returns the effective relativistic degrees of freedom in energy at a given temperature in GeV. 
@@ -199,7 +198,7 @@ def g_s_k(T):
     argument = np.where(Temp_in_GeV - T >= 0, Temp_in_GeV - T, np.inf).argmin()
     return Eff_rel_dof_in_entropy[argument]
 
-#.....................................................................................................................................................................
+#.................................................................................................................................................................
 
 def freq(T):
     """Function for converting temperature in GeV to present-frequency of GWs in Hz.
@@ -212,7 +211,7 @@ def E(T):
     [See Eq. (3.53)]"""
     return T*(np.pi**2 * g_star_k(T)/ 30)**(1/4)
 
-#.....................................................................................................................................................................
+#.................................................................................................................................................................
 
 # Converting the energy scales provided into effective temperatures in GeV
 
@@ -233,7 +232,7 @@ if len(Temperature_list) != len(EoS_list):
     print('There is a discrepancy in the number of epochs and the number of energy scales provided. Please check the inputs.')
     exit()
 
-#.....................................................................................................................................................................
+#.................................................................................................................................................................
 
 EoS_list.extend([Fraction(1, 3), 0])                # Adding the EoS of radiation and matter domination epochs after reheating
 Temperature_list.append(10**(-9)) #GeV              # Adding the temperature at the matter-radiation equality
@@ -243,8 +242,7 @@ freq_list = [freq(T) for T in Temperature_list]     #Hz #creating a frequency li
 # Converting EoS list to alpha list                 #alpha = 2/(1+3*w)
 alpha_arr = 2/(1+3*np.array(EoS_list))
 
-#.....................................................................................................................................................................
-
+#.................................................................................................................................................................
 
 # return the coefficients A_k_n and B_k_n for the final epoch
 def coeff(f):
@@ -300,7 +298,7 @@ def coeff(f):
 
     return A_k_arr[-1], B_k_arr[-1]
 
-#.....................................................................................................................................................................
+#.................................................................................................................................................................
 
 # Relativistic correction factor at beginning of last RD epoch
 G_R = (g_star_k(Temperature_list[-2])/ g_star_k(T_0)) * (g_s_k(T_0)/g_s_k(Temperature_list[-2]))**(4/3) # (g_{*, r*}/g_{*, 0}) * (g_{s, 0}/g_{s, r*})^{4/3} 
@@ -320,7 +318,7 @@ def Omega_GW_0(f):
 
 vec_Omega_GW_0 = np.vectorize(Omega_GW_0)   #vectorizing the function Omega_GW_0
 
-#.....................................................................................................................................................................
+#.................................................................................................................................................................
 
 #Loading the data for the sensitive curves. These are power-law integrated sensitivity curves (PLIS) for various GW detectors (except Planck)
 # obtained from https://zenodo.org/records/3689582 in relation to the paper https://arxiv.org/abs/2002.04615. 
@@ -437,7 +435,7 @@ Y14_DATA = 10**Y14
 X15_DATA = 10**X15
 Y15_DATA = 10**Y15
 
-#.....................................................................................................................................................................
+#.................................................................................................................................................................
 # Plotting the GW energy density spectrum
 
 f_inf = freq(Temp(E_inf)) #Hz # Present frequency corresponding to the energy scale during inflation
@@ -447,7 +445,7 @@ end_freq = np.log10(f_inf)      #Hz      #end frequency for the plot in Log10 sc
 f = np.logspace(start_freq, end_freq, num_of_points, endpoint=True, base=10.0) #Hz #frequency range for the plot
 plt.loglog(f, vec_Omega_GW_0(f), color = 'k',lw = 2, zorder = 10)
 
-#--------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 # Uncomment from the following lines as desired to plot the sensitivity curves of various GW detectors
 
 # Sensitivity curve for aLIGO
@@ -456,7 +454,8 @@ plt.setp(plot1, color='red', linewidth=1, linestyle='-')
 plt.fill_between(X1_DATA, Y1_DATA, 10**(-2), color='red', alpha=0.1)
 
 plt.text(30,1.95e-7, r"\textbf{aLIGO}", style='normal', fontsize=10, color='red',
-    verticalalignment='center', horizontalalignment='center', bbox={'facecolor': 'white', 'edgecolor': 'black', 'pad': 0.1, 'boxstyle': 'round', 'linewidth': 0.5}, zorder = 20)
+    verticalalignment='center', horizontalalignment='center', bbox={'facecolor': 'white', 'edgecolor': 'black', 'pad': 0.1, 'boxstyle': 'round',
+                                                                     'linewidth': 0.5}, zorder = 20)
 
 #--------------------------------------------------------------------------------
 
@@ -466,7 +465,8 @@ plt.setp(plot1, color='dodgerblue', linewidth=1, linestyle='-')
 plt.fill_between(X2_DATA, Y2_DATA, 10**(-2), color='dodgerblue', alpha=0.1)
 
 plt.text(0.12,1.95e-12, r"\textbf{DECIGO}", style='normal', fontsize=10, color='dodgerblue',
-    verticalalignment='center', horizontalalignment='center', bbox={'facecolor': 'white', 'edgecolor': 'black', 'pad': 0.1, 'boxstyle': 'round', 'linewidth': 0.5}, zorder = 20)
+    verticalalignment='center', horizontalalignment='center', bbox={'facecolor': 'white', 'edgecolor': 'black', 'pad': 0.1, 'boxstyle': 'round', 
+                                                                    'linewidth': 0.5}, zorder = 20)
 
 #--------------------------------------------------------------------------------
 
@@ -476,7 +476,8 @@ plt.setp(plot1, color='green', linewidth=1, linestyle='-')
 plt.fill_between(X3_DATA, Y3_DATA, 10**(-2), color='green', alpha=0.1)
 
 plt.text(1e-3,1.95e-10, r"\textbf{LISA}", style='normal', fontsize=10, color='green',
-    verticalalignment='center', horizontalalignment='center', bbox={'facecolor': 'white', 'edgecolor': 'black', 'pad': 0.1, 'boxstyle': 'round', 'linewidth': 0.5}, zorder = 20)
+    verticalalignment='center', horizontalalignment='center', bbox={'facecolor': 'white', 'edgecolor': 'black', 'pad': 0.1, 'boxstyle': 'round',
+                                                                     'linewidth': 0.5}, zorder = 20)
 
 #--------------------------------------------------------------------------------
 
@@ -486,7 +487,8 @@ plt.setp(plot1, color='indigo', linewidth=1, linestyle='-')
 plt.fill_between(X4_DATA, Y4_DATA, 10**(-2), color='indigo', alpha=0.1)
 
 plt.text(1e-9,1.95e-10, r"\textbf{IPTA}", style='normal', fontsize=10, color='indigo',
-    verticalalignment='center', horizontalalignment='center', bbox={'facecolor': 'white', 'edgecolor': 'indigo', 'pad': 0.1, 'boxstyle': 'round', 'linewidth': 0.5}, zorder = 20)
+    verticalalignment='center', horizontalalignment='center', bbox={'facecolor': 'white', 'edgecolor': 'indigo', 'pad': 0.1, 'boxstyle': 'round',
+                                                                     'linewidth': 0.5}, zorder = 20)
 
 #--------------------------------------------------------------------------------
 
@@ -496,7 +498,8 @@ plt.setp(plot1, color='purple', linewidth=1, linestyle='-')
 plt.fill_between(X5_DATA, Y5_DATA, 10**(-2), color='purple', alpha=0.1)
 
 plt.text(2,4e-17, r"\textbf{BBO}", style='normal', fontsize=10, color='purple',
-    verticalalignment='center', horizontalalignment='center', bbox={'facecolor': 'white', 'edgecolor': 'black', 'pad': 0.1, 'boxstyle': 'round', 'linewidth': 0.5}, zorder = 20)
+    verticalalignment='center', horizontalalignment='center', bbox={'facecolor': 'white', 'edgecolor': 'black', 'pad': 0.1, 'boxstyle': 'round',
+                                                                     'linewidth': 0.5}, zorder = 20)
 
 #--------------------------------------------------------------------------------
 
@@ -506,7 +509,8 @@ plt.setp(plot1, color='teal', linewidth=1, linestyle='-')
 plt.fill_between(X6_DATA, Y6_DATA, 10**(-2), color='teal', alpha=0.1)
 
 plt.text(6e-18,1.95e-9, r"\textbf{Planck}", style='normal', fontsize=10, color='teal',
-    verticalalignment='center', horizontalalignment='center', bbox={'facecolor': 'white', 'edgecolor': 'black', 'pad': 0.1, 'boxstyle': 'round', 'linewidth': 0.5}, zorder = 20)
+    verticalalignment='center', horizontalalignment='center', bbox={'facecolor': 'white', 'edgecolor': 'black', 'pad': 0.1, 'boxstyle': 'round',
+                                                                     'linewidth': 0.5}, zorder = 20)
 
 #--------------------------------------------------------------------------------
 
@@ -516,7 +520,8 @@ plt.setp(plot1, color='darkorange', linewidth=1, linestyle='-')
 plt.fill_between(X10_DATA, Y10_DATA, 10**(-2), color='darkorange', alpha=0.1)
 
 plt.text(30,1.95e-11, r"\textbf{ET}", style='normal', fontsize=10, color='darkorange',
-    verticalalignment='center', horizontalalignment='center', bbox={'facecolor': 'white', 'edgecolor': 'black', 'pad': 0.1, 'boxstyle': 'round', 'linewidth': 0.5}, zorder = 20)
+    verticalalignment='center', horizontalalignment='center', bbox={'facecolor': 'white', 'edgecolor': 'black', 'pad': 0.1, 'boxstyle': 'round',
+                                                                     'linewidth': 0.5}, zorder = 20)
 
 #--------------------------------------------------------------------------------
 
@@ -526,7 +531,8 @@ plt.setp(plot1, color='maroon', linewidth=1, linestyle='-')
 plt.fill_between(X11_DATA, Y11_DATA, 10**(-2), color='maroon', alpha=0.1)
 
 plt.text(2e2,1e-12, r"\textbf{CE}", style='normal', fontsize=10, color='maroon',
-    verticalalignment='center', horizontalalignment='center', bbox={'facecolor': 'white', 'edgecolor': 'black', 'pad': 0.1, 'boxstyle': 'round', 'linewidth': 0.5}, zorder = 20)
+    verticalalignment='center', horizontalalignment='center', bbox={'facecolor': 'white', 'edgecolor': 'black', 'pad': 0.1, 'boxstyle': 'round',
+                                                                     'linewidth': 0.5}, zorder = 20)
 
 #--------------------------------------------------------------------------------
 
@@ -598,14 +604,15 @@ plt.text(2e2,1e-12, r"\textbf{CE}", style='normal', fontsize=10, color='maroon',
 # plt.text(1e-9,1.e-7, r"\textbf{NANOGrav}", style='normal', fontsize=10, color='darkorange',
 #     verticalalignment='center', horizontalalignment='center')
 
-#-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Plotting the BBN constraint
 plt.axhline(y=BBN_constraint, color='royalblue', linestyle=':', lw = 1)
 plt.text(10e-7,12e-7, r"\textbf{BBN Constraint}", style='normal', fontsize=10, color='royalblue',
-    verticalalignment='center', horizontalalignment='center', bbox={'facecolor': 'white', 'edgecolor': 'black', 'pad': 0.3, 'boxstyle': 'round', 'linewidth': 0.5})
+    verticalalignment='center', horizontalalignment='center', bbox={'facecolor': 'white', 'edgecolor': 'black',
+                                                                     'pad': 0.3, 'boxstyle': 'round', 'linewidth': 0.5})
 
-#-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # For labelling the EoS  of each epochs
 
@@ -624,8 +631,8 @@ for i in range(len(Center_arr)-2):
     else:
         rot_new = 0
     plt.text(x = Center_arr[i], y = 5*10**(-20), s=r"$w_{"+ f'{i+1}' +"}$ = " + f'$\mathbf{{{EoS_list[i]}}}$', rotation=rot_new, fontsize=15
-             , color='navy', horizontalalignment='center', verticalalignment='bottom',  bbox={'facecolor':'white', 'edgecolor':'black'
-                                                                                              , 'boxstyle':'round', 'pad':0.1, 'alpha':1, 'linewidth':0.1}, zorder=20)
+             , color='navy', horizontalalignment='center', verticalalignment='bottom',
+                 bbox={'facecolor':'white', 'edgecolor':'black', 'boxstyle':'round', 'pad':0.1, 'alpha':1, 'linewidth':0.1}, zorder=20)
 
 epoch_list = [ r'\textbf{RD}', r'\textbf{MD}']
 for i in range(len(epoch_list)):
@@ -633,16 +640,16 @@ for i in range(len(epoch_list)):
              , horizontalalignment='center', verticalalignment='bottom', bbox={'facecolor':'white', 'edgecolor':'black'
                                                                                , 'boxstyle':'round', 'pad':0.1, 'alpha':1, 'linewidth':0.1}, zorder=20)
 
-#-------------------------------------------------------------------------------------------------------------------------------------------------------------------
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Vertical Boundary lines separating each epochs
 for i in range(len(freq_list)):
     plt.axvline(x=freq_list[i], color='purple', linestyle=':', lw = 0.5)
 
-# -------------------------------------------------------------------------------------------------------------------------------------------------------------------
+# ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 plt.xlabel(r'$f [\textbf{Hz}]$')
-plt.ylabel(r'$h^2\Omega_{\rm{GW}}^{(0)}(f)$')
+plt.ylabel(r'$h^2 \, \Omega_{\rm{GW}}^{(0)}(f)$')
 
 plt.ylim(10**(-20), 10**(-5))
 plt.xlim(10**start_freq, 10**end_freq)
@@ -651,7 +658,7 @@ plt.tick_params(direction='in')
 plt.savefig(Folder_path + "/FO_GWs_energy_density_spectrum.png", bbox_inches='tight', dpi = 300)
 plt.show()
 
-#.....................................................................................................................................................................
+#.................................................................................................................................................................
 
 
 # To check whether the GW energy density spectrum intersects the aLIGO sensitivity curve
@@ -682,7 +689,7 @@ def BBN_bound(EoS_list):
 
 formatted_Energy_list = [f'{Energy:.2e}' for Energy in Energy_list] # Formatting the energy scales to be displayed
 
-print('-----------------------------------------------------------------------------------------------------------------------------------------------------------')
+print('-------------------------------------------------------------------------------------------------------------------------------------------------------')
 print('')
 print(f'The equation of state parameters during reheating provided are: {EoS_list[:-2]}')
 
@@ -717,4 +724,4 @@ elif BBN_method == 'weaker':
         print('The BBN constraint is not satisfied.')
 
 print('')
-print('-----------------------------------------------------------------------------------------------------------------------------------------------------------')
+print('--------------------------------------------------------------------------------------------------------------------------------------------------------')
