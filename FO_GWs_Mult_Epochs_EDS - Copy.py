@@ -1,5 +1,5 @@
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------#
-#					                     	 Firsr-order Gravitational Wave Energy Density Spectrum - Multi-epoch Reheating
+#					                     	          First-order Gravitational Wave Energy Density Spectrum
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------#
 # Owner:         Athul K. Soman 
 # Collaborators: Swagat S. Mishra, Mohammed Shafi, Soumen Basak
@@ -9,13 +9,13 @@
 # transition from one epoch to the next epoch is assumed to be instantaneous. This code is associated with the paper "Inflationary Gravitational Waves as a 
 # probe of the unknown post-inflationary primordial Universe".
 
-# The code plots the image and saves it to the same folder as the code. The code also plots the power-law integrated sensitivity curves (PLIS) for various GW 
-# detectors. The data for the PLIS is taken from https://zenodo.org/records/3689582 in relation to the paper https://arxiv.org/abs/2002.04615. The instructions 
-# to provide the inputs are given in the comments. Your inputs must be provided only in the section "YOU HAVE TO PROVIDE INPUT ONLY HERE". 
+# The code plots the image and saves it to the same folder as the code. The instructions to provide the inputs are given in the comments. 
+# Your inputs must be provided only in the section "YOU HAVE TO PROVIDE INPUT ONLY HERE". 
 
 
 
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
 # The required packages are numpy, matplotlib, scipy, mpmath, shapely, and fractions.
 # Importing the required packages
 import numpy as np
@@ -29,7 +29,7 @@ from fractions import Fraction
 from shapely.geometry import LineString
 from shapely import intersects
 
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 #font
 mpl.rcParams['font.family'] = 'Times New Roman'
@@ -57,29 +57,26 @@ plt.rcParams['ytick.minor.width'] = 1
 
 plt.rcParams['axes.linewidth'] = 1
 
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 
 
 
 # YOU HAVE TO PROVIDE INPUT ONLY HERE
 #################################################################################################################################################################
-# Provide the folder path where this code is stored
+
+# PROVIDE THE FOLDER PATH where the code is saved.
 Folder_path = 'C:/Users/ATHUL/Cosmology/Major Project/Codes/Phase 2'
 
-# Provide the equation of state of each epoch during reheating in the following list in order from the earliest epoch to the latest epoch
-# Use Fraction() to provide fractions. For example, Fraction(1,3) for radiation-dominated epoch. This will make the labelling to appear as w = 1/3
+
+# Provide the equation of state of each epochs during reheating in the following list in order from the EARLIEST epoch to the LATEST epoch.
 # The values must be between -0.28 and 0.99.
 EoS_list = [0.8, Fraction(1,3), 0.5] # [w_1, w_2, w_3, ..., w_n]  
 
 
-# List the energy scale of the universe in GeV at which you want each of the epochs to end (except the last epoch) during reheating in order from the earliest 
-# epoch to the second last epoch.
-# For example, if you have 3 epochs during reheating, you have to provide 2 values in the list. The first value is the energy scale at which the first epoch 
-# ends, and the second value is the energy scale at which the second epoch ends. 
-
-# Please provide the energy scales to be greater than 10^2 GeV.
-# This is because above E >= 10^2 GeV, the relativistic degrees of freedom are almost constant, g_star = g_s = 106.75, and we use 
-# this value in converting the energy scales to temperature in GeV. If the energy scale is less than 10^2 GeV, the data will be inaccurate.
+# Provide the energy scales marking the end of each epoch of reheating in GeV in the following list (Do not include the energy scale at the end of the last epoch).
+# If there is only one epoch of reheating, provide an empty list.
+# For example, if you have 3 epochs during reheating, you have to provide 2 values in the list.
+# The values must be greater than or equal to ~10^2 GeV **.
 Energy_list = [10**8, 10**5] #GeV #[E_1, E_2, ...., E_{n-1}]
 
 
@@ -101,7 +98,15 @@ BBN_method = 'weaker' #['weaker', 'intersection']
 
 # Provide the number of data points you want in the plot of GW energy density spectrum
 num_of_points = 1000
+
+
+#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
+# **: This is because above E >= 10^2 GeV, the relativistic degrees of freedom are almost constant, g_star = g_s = 106.75, and we use 
+#     this value in converting the energy scales to temperature in GeV. If the energy scale is less than 10^2 GeV, the data will be inaccurate.
 #################################################################################################################################################################
+
+
+
 
 # defining the values of the constants
 Omega_rad_0 = 4.16*10**(-5)                         # Present radiation density parameter (This is actually Omega_{rad, 0}*h^2) [see Eq. (E.7)]
