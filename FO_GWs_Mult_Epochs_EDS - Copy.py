@@ -1,11 +1,11 @@
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------#
-#					                     	          First-order Gravitational Wave Energy Density Spectrum
+#					                     	          Spectral Energy Density of First-order Inflationary Gravitational Waves
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------#
 # Owner:         Athul K. Soman 
 # Collaborators: Swagat S. Mishra, Mohammed Shafi, Soumen Basak
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-# This python script is to compute the energy density spectrum of first-order inflationary gravitational waves (GWs) for a multi-epoch reheating scenario. The 
+# This python script is to compute the spectral energy density of first-order inflationary gravitational waves (GWs) for a multi-epoch reheating scenario. The 
 # transition from one epoch to the next epoch is assumed to be instantaneous. This code is associated with the paper "Inflationary Gravitational Waves as a 
 # probe of the unknown post-inflationary primordial Universe".
 
@@ -93,10 +93,10 @@ r = 0.001
 # Choose the method you want to use for checking the BBN constraint.
 # 1. If you want to cross check the results we presented or want to use the weaker constraint which we have used in our paper [see Eq. (3.59)], provide 'weaker'
 # 2. If you are changing the values of 'r' (or 'E_inf') and/or 'T_Rh' from the values we have used in our paper, we advise you to use the intersection method, 
-#    which checks whether the GW energy density spectrum intersects with the BBN constraint curve. Provide 'intersection' for this.
+#    which checks whether the GW spectral energy density intersects with the BBN constraint curve. Provide 'intersection' for this.
 BBN_method = 'weaker' #['weaker', 'intersection']
 
-# Provide the number of data points you want in the plot of GW energy density spectrum
+# Provide the number of data points (frequency) you want in the plot of GW spectral energy density.
 num_of_points = 1000
 
 
@@ -216,6 +216,7 @@ def E(T):
     [See Eq. (3.53)]"""
     return T*(np.pi**2 * g_star_k(T)/ 30)**(1/4)
 
+
 #.................................................................................................................................................................
 
 # Converting the energy scales provided into effective temperatures in GeV
@@ -311,9 +312,9 @@ G_R = (g_star_k(Temperature_list[-2])/ g_star_k(T_0)) * (g_s_k(T_0)/g_s_k(Temper
 
 const_coeff = 1/(96*(np.pi)**3) * G_R * Omega_rad_0 * (H_inf/m_P)**2 # The coefficient in Eq. (3.55)
 
-#Function for calculating the energy density spectrum at present time
+#Function for calculating the spectral energy density at present time
 def Omega_GW_0(f):
-    """Function to calculate the present energy density spectrum of GWs for a given frequency f.
+    """Function to calculate the present spectral energy density of GWs for a given frequency f.
     [See Eq. (3.55)]"""
 
     y_eq = f/freq_list[-1] # y_eq = f/f_eq
@@ -347,7 +348,7 @@ DATA13 = np.loadtxt(Folder_path + "/PLIS/LVO2.txt")
 DATA14 = np.loadtxt(Folder_path + "/PLIS/EPTA.txt")
 DATA15 = np.loadtxt(Folder_path + "/PLIS/NANOGrav.txt")
 
-# Separating the data into frequency and energy density spectrum
+# Separating the data for x and y axes
 X1 = np.array(DATA1[:,0])
 Y1 = np.array(DATA1[:,1])
 
@@ -441,7 +442,7 @@ X15_DATA = 10**X15
 Y15_DATA = 10**Y15
 
 #.................................................................................................................................................................
-# Plotting the GW energy density spectrum
+# Plotting the GW spectral energy density
 
 f_inf = freq(Temp(E_inf)) #Hz # Present frequency corresponding to the energy scale during inflation
 
@@ -666,9 +667,9 @@ plt.show()
 #.................................................................................................................................................................
 
 
-# To check whether the GW energy density spectrum intersects the aLIGO sensitivity curve
+# To check whether the GW spectral energy density intersects the aLIGO sensitivity curve
 aLIGO_curve = LineString(np.column_stack((X1_DATA, Y1_DATA))) # Creating a line string for the aLIGO sensitivity curve
-Spectrum = LineString(np.column_stack((f, vec_Omega_GW_0(f)))) # Creating a line string for the GW energy density spectrum
+Spectrum = LineString(np.column_stack((f, vec_Omega_GW_0(f)))) # Creating a line string for the GW spectral energy density
 
 # Creating a line string for the horizontal BBN constraint
 BBN_constraint_line = LineString([(10**start_freq, BBN_constraint), (10**end_freq, BBN_constraint)])
@@ -712,15 +713,15 @@ print(f'The temperature at the end of reheating, T_Rh   = {T_Rh} GeV')
 print('')
 
 if intersects(Spectrum, aLIGO_curve):
-    print('The GW energy density spectrum intersects the aLIGO sensitivity curve.')
+    print('The GW spectral energy density curve intersects the aLIGO sensitivity curve.')
 else:
-    print('The GW energy density spectrum does not intersect the aLIGO sensitivity curve.')
+    print('The GW spectral energy density curve does not intersect the aLIGO sensitivity curve.')
 
 if BBN_method == 'intersection':
     if intersects(Spectrum, BBN_constraint_line):
-        print('The GW energy density spectrum intersects the BBN constraint bound.')
+        print('The GW spectral energy density curve intersects the BBN constraint bound.')
     else:
-        print('The GW energy density spectrum does not intersect the BBN constraint bound.')
+        print('The GW spectral energy density curve does not intersect the BBN constraint bound.')
 
 elif BBN_method == 'weaker':
     if BBN_bound(EoS_list):
