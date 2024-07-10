@@ -1,5 +1,5 @@
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------#
-#					                     	          Spectral Energy Density of First-order Inflationary Gravitational Waves
+#					                     	        Spectral Energy Density of First-order Inflationary Gravitational Waves
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------#
 # Owner:         Athul K. Soman 
 # Collaborators: Swagat S. Mishra, Mohammed Shafi, Soumen Basak
