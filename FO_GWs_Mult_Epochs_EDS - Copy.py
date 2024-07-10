@@ -69,25 +69,26 @@ Folder_path = 'C:/Users/ATHUL/Cosmology/Major Project/Codes/Phase 2'
 
 
 # Provide the equation of state of each epochs during reheating in the following list in order from the EARLIEST epoch to the LATEST epoch.
-# The values must be between -0.28 and 0.99.
+# The values must be between -0.28 and 1.
 EoS_list = [0.8, Fraction(1,3), 0.5] # [w_1, w_2, w_3, ..., w_n]  
 
 
 # Provide the energy scales marking the end of each epoch of reheating in GeV in the following list (Do not include the energy scale at the end of the last epoch).
 # If there is only one epoch of reheating, provide an empty list.
 # For example, if you have 3 epochs during reheating, you have to provide 2 values in the list.
-# The values must be greater than or equal to ~10^2 GeV **.
-Energy_list = [10**8, 10**5] #GeV #[E_1, E_2, ...., E_{n-1}]
+# The values must be between 10^(-3) GeV and 10^(16) GeV.
+Energy_list = [10**8, 10**2] #GeV #[E_1, E_2, ...., E_{n-1}]
 
 
-# Provide the temperature acheived at the end of reheating in GeV.
+# Provide the temperature acheived at the end of reheating in GeV or the energy scale of the universe at the end of reheating in GeV. Comment the other one out.
 # In accordance to the BBN constarint, the temperature at the end of reheating must be greater than 10^(-3) GeV, i.e., T_Rh > T_BBN = 10^(-3) GeV
-T_Rh = 0.45 #GeV
+# T_Rh = 0.45 #GeV
+E_Rh = 1 #GeV
 
 
 # Provide either the value of tensor-to-scalar ratio 'r', or the value of energy scale during inflation 'E_inf' in GeV. Comment the other one out.
 r = 0.001
-# E_inf = 10**16 #GeV
+# E_inf = 5.76*10**15 #GeV
 
 
 # Choose the method you want to use for checking the BBN constraint.
@@ -99,14 +100,7 @@ BBN_method = 'weaker' #['weaker', 'intersection']
 # Provide the number of data points (frequency) you want in the plot of GW spectral energy density.
 num_of_points = 1000
 
-
-#-----------------------------------------------------------------------------------------------------------------------------------------------------------------
-# **: This is because above E >= 10^2 GeV, the relativistic degrees of freedom are almost constant, g_star = g_s = 106.75, and we use 
-#     this value in converting the energy scales to temperature in GeV. If the energy scale is less than 10^2 GeV, the data will be inaccurate.
 #################################################################################################################################################################
-
-
-
 
 # defining the values of the constants
 Omega_rad_0 = 4.16*10**(-5)                         # Present radiation density parameter (This is actually Omega_{rad, 0}*h^2) [see Eq. (E.7)]
@@ -148,20 +142,16 @@ except NameError:
 
 #Checking the validity of the equations of state provided
 for i in range(len(EoS_list)):
-    if EoS_list[i] <= -1/3 or EoS_list[i] >= 1:
-        print(f'The equation of state given in position {i+1} of EoS_list is invalid. EoS must be between -1/3 and 1')
+    if EoS_list[i] < -0.28 or EoS_list[i] > 1:
+        print(f'The equation of state given in position {i+1} of EoS_list is invalid. EoS must be between -0.28 and 1')
         exit()
 
-#checking the validity of the energy scales provided
+#Checking the validity of the energy scales provided
 for i in range(len(Energy_list)):
-    if Energy_list[i] < 10**2:
-        print(f'The code is not designed for the scale given in position {i+1}. Energy scale must be greater than 10^2 GeV')
+    if Energy_list[i] < 10**(-3) or Energy_list[i] > 10**16:
+        print(f'The energy scale given in position {i+1} of Energy_list is invalid. Energy scale must be between 10^(-3) GeV and 10^16 GeV')
         exit()
 
-#checking the validity of the temperature at the end of reheating
-if T_Rh < 10**(-3):
-    print('The temperature at the end of reheating must be greater than 10^(-3) GeV')
-    exit()
 
 #checking the validity of the energy scale during inflation
 if E_inf < Energy_list[0]:
@@ -179,15 +169,6 @@ Temp_in_GeV = np.array(Eff_rel_dof_data[:,0])
 Eff_rel_dof_in_energy = np.array(Eff_rel_dof_data[:,1])
 Eff_rel_dof_in_entropy = np.array(Eff_rel_dof_data[:,2])
 
-#.................................................................................................................................................................
-
-def Temp(E):
-    """Function to convert energy scale (E >= 10**2 GeV) of universe to effective temperature in GeV
-    [See Eq. (3.53)]"""
-    # for E >= 10^2 GeV, g_* = g_s = 106.75
-    return E/(np.pi**2 * 106.75/ 30)**(1/4)
-
-vec_Temp = np.vectorize(Temp)   # Vectorizing the function Temp
 
 #.................................................................................................................................................................
 
@@ -202,6 +183,56 @@ def g_s_k(T):
     The data is taken from the external file eff_rel_dof.txt'''
     argument = np.where(Temp_in_GeV - T >= 0, Temp_in_GeV - T, np.inf).argmin()
     return Eff_rel_dof_in_entropy[argument]
+
+#.................................................................................................................................................................
+
+def temp_to_energy(T):
+    '''This function takes temperature in GeV as input and returns energy in GeV, temperature in GeV and g_star_k(T) as output'''
+    return (np.pi**2 / 30 * g_star_k(T))**(1/4) * T, T, g_star_k(T)
+
+vec_temp_to_energy = np.vectorize(temp_to_energy)
+
+# Creating a table for energy in GeV, temperature in GeV and g_star_k(T) for temperatures between 0.1 GeV and 10^16 GeV
+temp_arr = np.logspace(np.log10(1e-3), 16, 100000)
+temperature_table = np.column_stack((vec_temp_to_energy(temp_arr)[0], vec_temp_to_energy(temp_arr)[1], vec_temp_to_energy(temp_arr)[2]))
+
+
+#  Function for converting energy in GeV to temperature in GeV
+def Temp(E):
+    '''This function takes energy in GeV as input and returns temperature in GeV as output. It uses the temperature_table created above. This can
+    only be used for temperatures in between 10^(-3) GeV and 10^16 GeV. For temperatures outside this range, the function will return an error. This function 
+    is mainly built for effective temperatures during reheating. If one need to include temperatures outside this range, the temperature_arr should be
+    updated accordingly.'''
+
+    argument = np.where(temperature_table[:,0] - E >= 0, temperature_table[:,0] - E, np.inf).argmin()
+    g_star = temperature_table[argument,2]
+    return E / (np.pi**2 / 30 * g_star)**(1/4)
+
+vec_Temp = np.vectorize(Temp)   # Vectorizing the function Temp
+
+try:
+    T_Rh
+    # If T_Rh is defined, execute this block
+    pass
+
+except NameError:
+    # If T_Rh is not defined, execute this block
+    try:
+        E_Rh
+        # If E_Rh is defined, execute this block
+        T_Rh = Temp(E_Rh) #GeV
+    except NameError:
+        print('Please provide either the value of temperature at the end of reheating T_Rh in GeV, or the value of energy scale at the end of reheating E_Rh in GeV')
+        exit()
+
+#checking the validity of the temperature at the end of reheating
+if T_Rh < 10**(-3):
+    print('The temperature at the end of reheating must be greater than 10^(-3) GeV')
+    exit()
+
+if T_Rh >= Temp(Energy_list[-1]):
+    print('The temperature at the end of reheating is greater than the effective temperature at the end of the second-last epoch of reheating')
+    exit()
 
 #.................................................................................................................................................................
 
@@ -613,11 +644,19 @@ plt.text(2e2,1e-12, r"\textbf{CE}", style='normal', fontsize=10, color='maroon',
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # Plotting the BBN constraint
-plt.axhline(y=BBN_constraint, color='royalblue', linestyle=':', lw = 1)
-plt.text(10e-7,12e-7, r"\textbf{BBN Constraint}", style='normal', fontsize=10, color='royalblue',
-    verticalalignment='center', horizontalalignment='center', bbox={'facecolor': 'white', 'edgecolor': 'black',
-                                                                     'pad': 0.3, 'boxstyle': 'round', 'linewidth': 0.5})
+plt.axhline(y=BBN_constraint, color='grey', linestyle=':', lw = 1, zorder = 50)
+plt.fill_between(np.logspace(start_freq, end_freq), BBN_constraint, 10**(-4), color='grey', alpha=0.8, zorder = 30)
+plt.text(10e-6,8e-6, r"\textbf{BBN Constraint}", style='normal', fontsize=10, color='black',
+    verticalalignment='center', horizontalalignment='center', bbox={'facecolor': 'white', 'edgecolor': 'black', 'pad': 0.3, 'boxstyle': 'round', 'linewidth': 0.5}, 
+    zorder = 40)
 
+f_eq = freq_list[-1] #Hz # Present frequency corresponding to matter-radiation equality
+
+# Texts for matter-radiation equality and end of reheating
+plt.text(f_eq - 0.6*f_eq, 1e-17, r"\textbf{Matter-radiation}", style='normal', fontsize=9, color='brown', rotation = 90)
+plt.text(f_eq + 0.4*f_eq, 1e-16, r"\textbf{equality}", style='normal', fontsize=9, color='brown', rotation = 90)
+
+plt.text(0.35* freq_list[-2], 1e-17, r"\textbf{End of reheating}", style='normal', fontsize=9, color='brown', rotation = 90)
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 # For labelling the EoS  of each epochs
@@ -650,18 +689,18 @@ for i in range(len(epoch_list)):
 
 # Vertical Boundary lines separating each epochs
 for i in range(len(freq_list)):
-    plt.axvline(x=freq_list[i], color='purple', linestyle=':', lw = 0.5)
+    plt.axvline(x=freq_list[i], color='grey', linestyle='--', lw = 1)
 
 # ----------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 plt.xlabel(r'$f [\textbf{Hz}]$')
 plt.ylabel(r'$h^2 \, \Omega_{\rm{GW}}^{(0)}(f)$')
 
-plt.ylim(10**(-20), 10**(-5))
+plt.ylim(10**(-20), 5*10**(-5))
 plt.xlim(10**start_freq, 10**end_freq)
 
 plt.tick_params(direction='in')
-plt.savefig(Folder_path + "/FO_GWs_energy_density_spectrum.png", bbox_inches='tight', dpi = 300)
+plt.savefig(Folder_path + "/FO_GWs_spectral_energy_density.png", bbox_inches='tight', dpi = 300)
 plt.show()
 
 #.................................................................................................................................................................
@@ -708,7 +747,13 @@ try:
 except NameError:
     print(f'The Energy scale during inflation, E_inf    = {E_inf:.2e} GeV')
 
-print(f'The temperature at the end of reheating, T_Rh   = {T_Rh} GeV')
+try:
+    E_Rh
+    print(f'The energy scale at the end of reheating, E_Rh  = {E_Rh:.2e} GeV')
+except NameError:
+    pass
+
+print(f'The temperature at the end of reheating, T_Rh   = {T_Rh:.2e} GeV')
 
 print('')
 
