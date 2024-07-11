@@ -1,5 +1,5 @@
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------#
-#					                     	        Spectral Energy Density of First-order Inflationary Gravitational Waves
+#					                     	     Spectral Energy Density of First-order Inflationary Gravitational Waves
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------#
 # Owner:         Athul K. Soman 
 # Collaborators: Swagat S. Mishra, Mohammed Shafi, Soumen Basak
@@ -69,15 +69,16 @@ Folder_path = 'C:/Users/ATHUL/Cosmology/Major Project/Codes/Phase 2'
 
 
 # Provide the equation of state of each epochs during reheating in the following list in order from the EARLIEST epoch to the LATEST epoch.
-# The values must be between -0.28 and 1.
-EoS_list = [0.8, Fraction(1,3), 0.5] # [w_1, w_2, w_3, ..., w_n]  
+# The values must be between -0.28 <= w < 1.
+# w = 1, you can only provide for the first epoch. For the rest of the epochs, you can provide values between -0.28 <= w < 1.
+EoS_list = [0.5, 0.9] # [w_1, w_2, w_3, ..., w_n]  
 
 
 # Provide the energy scales marking the end of each epoch of reheating in GeV in the following list (Do not include the energy scale at the end of the last epoch).
 # If there is only one epoch of reheating, provide an empty list.
 # For example, if you have 3 epochs during reheating, you have to provide 2 values in the list.
 # The values must be between 10^(-3) GeV and 10^(16) GeV.
-Energy_list = [10**8, 10**2] #GeV #[E_1, E_2, ...., E_{n-1}]
+Energy_list = [10**8] #GeV #[E_1, E_2, ...., E_{n-1}]
 
 
 # Provide the temperature acheived at the end of reheating in GeV or the energy scale of the universe at the end of reheating in GeV. Comment the other one out.
@@ -142,22 +143,32 @@ except NameError:
 
 #Checking the validity of the equations of state provided
 for i in range(len(EoS_list)):
-    if EoS_list[i] < -0.28 or EoS_list[i] > 1:
-        print(f'The equation of state given in position {i+1} of EoS_list is invalid. EoS must be between -0.28 and 1')
-        exit()
+    if i == 0:
+        if EoS_list[i] < -0.28 or EoS_list[i] > 1:
+            print(f'The equation of state given in position {i+1} of EoS_list is invalid. EoS must be between -0.28 and 1')
+            exit()
+    else:
+        if EoS_list[i] < -0.28 or EoS_list[i] >= 1:
+            print(f'The equation of state given in position {i+1} of EoS_list is invalid. EoS must be between -0.28 and 1')
+            exit()
 
 #Checking the validity of the energy scales provided
-for i in range(len(Energy_list)):
-    if Energy_list[i] < 10**(-3) or Energy_list[i] > 10**16:
-        print(f'The energy scale given in position {i+1} of Energy_list is invalid. Energy scale must be between 10^(-3) GeV and 10^16 GeV')
+
+if Energy_list == []: # If reheating has only single epoch
+    pass
+
+else:
+    for i in range(len(Energy_list)):
+        if Energy_list[i] < 10**(-3) or Energy_list[i] > 10**16:
+            print(f'The energy scale given in position {i+1} of Energy_list is invalid. Energy scale must be between 10^(-3) GeV and 10^16 GeV')
+            exit()
+
+
+    #checking the validity of the energy scale during inflation
+    if E_inf < Energy_list[0]:
+        print('The energy scale during inflation is less than the energy scale at the end of the first epoch of reheating')
+        print('Please provide a higher value for tensor-to-scalar ratio r')
         exit()
-
-
-#checking the validity of the energy scale during inflation
-if E_inf < Energy_list[0]:
-    print('The energy scale during inflation is less than the energy scale at the end of the first epoch of reheating')
-    print('Please provide a higher value for tensor-to-scalar ratio r')
-    exit()
 
 #.................................................................................................................................................................
 
@@ -193,7 +204,7 @@ def temp_to_energy(T):
 vec_temp_to_energy = np.vectorize(temp_to_energy)
 
 # Creating a table for energy in GeV, temperature in GeV and g_star_k(T) for temperatures between 0.1 GeV and 10^16 GeV
-temp_arr = np.logspace(np.log10(1e-3), 16, 100000)
+temp_arr = np.logspace(np.log10(10**(-3)), 16, 100000)
 temperature_table = np.column_stack((vec_temp_to_energy(temp_arr)[0], vec_temp_to_energy(temp_arr)[1], vec_temp_to_energy(temp_arr)[2]))
 
 
@@ -230,9 +241,10 @@ if T_Rh < 10**(-3):
     print('The temperature at the end of reheating must be greater than 10^(-3) GeV')
     exit()
 
-if T_Rh >= Temp(Energy_list[-1]):
-    print('The temperature at the end of reheating is greater than the effective temperature at the end of the second-last epoch of reheating')
-    exit()
+if len(Energy_list) != 0:
+    if T_Rh >= Temp(Energy_list[-1]):
+        print('The temperature at the end of reheating is greater than the effective temperature at the end of the second-last epoch of reheating')
+        exit()
 
 #.................................................................................................................................................................
 
@@ -261,9 +273,7 @@ else:
 
 Temperature_list.append(T_Rh) #GeV # adding the end of reheating temperature
 
-if Temperature_list[-1] > Temperature_list[-2]:
-    print('The temperature at the end of reheating you provided is greater than the effective temperature at the end of the second last epoch of reheating')
-    exit()
+
 
 if len(Temperature_list) != len(EoS_list):
     print('There is a discrepancy in the number of epochs and the number of energy scales provided. Please check the inputs.')
