@@ -9,6 +9,8 @@
 # transition from one epoch to the next epoch is assumed to be instantaneous. This code is associated with the paper "Inflationary Gravitational Waves as a 
 # probe of the unknown post-inflationary primordial Universe".
 
+# This code is associated with the paper arXiv.2407.07956 [https://arxiv.org/pdf/2407.07956].
+
 # The code plots the image and saves it to the same folder as the code. The instructions to provide the inputs are given in the comments. 
 # Your inputs must be provided only in the section "YOU HAVE TO PROVIDE INPUT ONLY HERE". 
 
@@ -780,9 +782,9 @@ if BBN_method == 'intersection':
 
 elif BBN_method == 'weaker':
     if BBN_bound(EoS_list):
-        print('The BBN constraint is satisfied.')
+        print('The weaker BBN constraint is satisfied.')
     else:
-        print('The BBN constraint is not satisfied.')
+        print('The weaker BBN constraint is not satisfied.')
 
 print('')
 print('--------------------------------------------------------------------------------------------------------------------------------------------------------')
