@@ -5,5 +5,5 @@ It is recommended that the whole set of files in this repository be downloaded t
 
 This code is associated with the paper arXiv.2407.07956 (https://arxiv.org/abs/2407.07956).
 
-<span style="font-size: 1.2em; font-weight: bold;">References bold</span>
+<span style="font-size: 2.2em; font-weight: bold;">References</span>
 [1] Gillies, S., van der Wel, C., Van den Bossche, J., Taves, M. W., Arnott, J., Ward, B. C., & others. (2024). Shapely (Version 2.0.5) [Computer software]. https://doi.org/10.5281/zenodo.5597138
