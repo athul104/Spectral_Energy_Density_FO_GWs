@@ -5,14 +5,4 @@ It is recommended that the whole set of files in this repository be downloaded t
 
 This code is associated with the paper arXiv.2407.07956 (https://arxiv.org/abs/2407.07956).
 
-\cite{@software{Gillies_Shapely_2024,
-author = {Gillies, Sean and van der Wel, Casper and Van den Bossche, Joris and Taves, Mike W. and Arnott, Joshua and Ward, Brendan C. and {others}},
-doi = {10.5281/zenodo.5597138},
-license = {BSD-3-Clause},
-month = jul,
-title = {{Shapely}},
-url = {https://github.com/shapely/shapely},
-version = {2.0.5},
-year = {2024}
-}}
 
