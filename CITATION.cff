@@ -1,0 +1,10 @@
+cff-version: 1.2.0
+message: "If you use this code, please cite the following paper."
+type: article
+author = "Soman, Athul K. and Mishra, Swagat S. and Shafi, Mohammed and Basak, Soumen",
+title = "{Inflationary Gravitational Waves as a probe of the unknown post-inflationary primordial Universe}",
+eprint = "2407.07956",
+archivePrefix = "arXiv",
+primaryClass = "gr-qc",
+month = "7",
+year = "2024"
