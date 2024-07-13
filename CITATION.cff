@@ -1,6 +1,5 @@
 cff-version: 1.2.0
 message: "If you use this code, please cite the following paper."
-type: article
 title: "Inflationary Gravitational Waves as a probe of the unknown post-inflationary primordial Universe"
 authors:
   - family-names: "Soman"
@@ -12,9 +11,8 @@ authors:
   - family-names: "Basak"
     given-names: "Soumen"
 year: 2024
-month: 7
-archivePrefix: "arXiv"
+month: "7"
+archive-prefix: "arXiv"
 eprint: "2407.07956"
-primaryClass: "gr-qc"
-url: "https://arxiv.org/abs/2407.07956"
-
+primary-class: "gr-qc"
+type: "article"
