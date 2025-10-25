@@ -1,26 +1,27 @@
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------#
 #					                     	     Spectral Energy Density of First-order Inflationary Gravitational Waves
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------#
-# Owner:         Athul K. Soman 
+# Owner        : Athul K. Soman 
 # Collaborators: Swagat S. Mishra, Mohammed Shafi, Soumen Basak
 #---------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-# This python script is to compute the spectral energy density of first-order inflationary gravitational waves (GWs) for a multi-epoch reheating scenario. The 
-# transition from one epoch to the next epoch is assumed to be instantaneous. This code is associated with the paper "Inflationary Gravitational Waves as a 
-# probe of the unknown post-inflationary primordial Universe".
+# This python script is to compute the spectral energy density of first-order inflationary gravitational waves (GWs) for a multi-epoch reheating scenario. 
+# The transition from one epoch to the next epoch is assumed to be instantaneous. 
+# This code is associated with the paper "Inflationary Gravitational Waves as a probe of the unknown post-inflationary primordial Universe" 
+# (arXiv.2407.07956 [https://arxiv.org/abs/2407.07956]).
 
-# This code is associated with the paper arXiv.2407.07956 [https://arxiv.org/abs/2407.07956].
+# This code will generate the plot of the spectral energy density of first-order inflationary GWs as a function of present-day frequency of GWs 
+# for a multi-epoch reheating scenario as specified by the user. The png image will be saved in the same folder as the code. 
+# The instructions to provide the inputs are given in the comments. 
+# Your inputs are only needed in the section "YOU HAVE TO PROVIDE INPUT ONLY HERE" (line 68-111). 
 
-# The code plots the image and saves it to the same folder as the code. The instructions to provide the inputs are given in the comments. 
-# Your inputs must be provided only in the section "YOU HAVE TO PROVIDE INPUT ONLY HERE". 
 
 
-
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-# The required packages are numpy, matplotlib, scipy, mpmath, shapely, and fractions.
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------#
 # Importing the required packages
+# The required packages are numpy, matplotlib, scipy, mpmath, shapely, and fractions.
 import numpy as np
+import os
 import matplotlib.pyplot as plt
 from scipy.special import gamma
 from matplotlib import rcParams
@@ -30,10 +31,9 @@ import mpmath
 from fractions import Fraction
 from shapely.geometry import LineString
 from shapely import intersects
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------#
 
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
-#font
+# #font
 mpl.rcParams['font.family'] = 'Times New Roman'
 
 # activate latex text rendering
@@ -59,57 +59,90 @@ plt.rcParams['ytick.minor.width'] = 1
 
 plt.rcParams['axes.linewidth'] = 1
 
-#!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-
+#---------------------------------------------------------------------------------------------------------------------------------------------------------------#
+# To set the directory to the folder where the code is saved
+os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
 
 # YOU HAVE TO PROVIDE INPUT ONLY HERE
 #################################################################################################################################################################
 
-# PROVIDE THE FOLDER PATH where the code is saved.
-Folder_path = 'C:/Users/ATHUL/Cosmology/Major Project/Codes/Phase 2'
+
+# 1) EQUATION OF STATE (EoS) DURING REHEATING
+# -----------------------------------------------------------------------------------
+#   +) Provide the equation of state of each epochs during reheating in the following list in order from the EARLIEST epoch to the LATEST epoch.
+#   +) The values must be between -0.28 <= w < 1.
+
+EoS_list = [-0.2, -0.1, 0.0, 0.4, 0.6, 0.8, 0.9, 0.99] # [w_1, w_2, w_3, ..., w_n]  
 
 
-# Provide the equation of state of each epochs during reheating in the following list in order from the EARLIEST epoch to the LATEST epoch.
-# The values must be between -0.28 <= w < 1.
-# w = 1, you can only provide for the first epoch. For the rest of the epochs, you can provide values between -0.28 <= w < 1.
-EoS_list = [0.5, 0.9] # [w_1, w_2, w_3, ..., w_n]  
+# 2) TEMPERATURE OR ENERGY SCALE AT THE END OF REHEATING
+# -----------------------------------------------------------------------------------
+#   +) Provide the temperature achieved at the end of reheating (T_Rh) in GeV or the energy scale of the universe at the end of reheating (E_Rh) in GeV. 
+#      Comment the other one.
+#   +) In accordance to the BBN constarint, the temperature at the end of reheating must be greater than 10^(-3) GeV, i.e., T_Rh > T_BBN = 10^(-3) GeV
+
+# T_Rh = 1e-3 #GeV
+E_Rh = 0.3 #GeV
 
 
-# Provide the energy scales marking the end of each epoch of reheating in GeV in the following list (Do not include the energy scale at the end of the last epoch).
-# If there is only one epoch of reheating, provide an empty list.
-# For example, if you have 3 epochs during reheating, you have to provide 2 values in the list.
-# The values must be between 10^(-3) GeV and 10^(16) GeV.
-Energy_list = [10**8] #GeV #[E_1, E_2, ...., E_{n-1}]
+# 3) ENERGY SCALES DURING REHEATING
+# -----------------------------------------------------------------------------------
+#   +) Provide the energy scales marking the end of each epoch during reheating in GeV in the following list.
+#   +) The energy scale at the end of reheating (E_Rh) should NOT be included in this list as it is already provided above. Even if you provide the 
+#      temperature at the end of reheating (T_Rh), you should NOT include the corresponding energy scale (E_Rh) in this list.
+#   +) The energy scales must be in the order from the LATEST epoch to the EARLIEST epoch during reheating, i.e., [E_{n-1}, E_{n-2}, ..., E_1],
+#      where n is the number of epochs during reheating.
+#   +) If there is only one epoch of reheating, provide an empty list.
+#   +) For example, if you have 3 epochs during reheating, you have to provide 2 values in the list, corresponding to the end of the second and
+#      first epochs in that order.
+#   +) The values must be between 10^(-3) GeV and 10^(16) GeV.
+
+Energy_list = [1e2, 1e4, 1e6, 1e8, 1e10, 1e12, 1e14] #GeV [E_{n-1}, E_{n-2}, ..., E_1]
 
 
-# Provide the temperature acheived at the end of reheating in GeV or the energy scale of the universe at the end of reheating in GeV. Comment the other one out.
-# In accordance to the BBN constarint, the temperature at the end of reheating must be greater than 10^(-3) GeV, i.e., T_Rh > T_BBN = 10^(-3) GeV
-# T_Rh = 0.45 #GeV
-E_Rh = 1 #GeV
 
+# 4) TENSOR-TO-SCALAR RATIO OR ENERGY SCALE DURING INFLATION
+# -----------------------------------------------------------------------------------
+#   +) Provide either the value of tensor-to-scalar ratio 'r', or the value of energy scale during inflation 'E_inf' in GeV. Comment the other one.
+#   +) The value of tensor-to-scalar ratio must be less than the current upper bound r < 0.036 [https://arxiv.org/abs/2110.00483]
 
-# Provide either the value of tensor-to-scalar ratio 'r', or the value of energy scale during inflation 'E_inf' in GeV. Comment the other one out.
-r = 0.001
+r = 1e-3 
 # E_inf = 5.76*10**15 #GeV
 
 
-# Choose the method you want to use for checking the BBN constraint.
-# 1. If you want to cross check the results we presented or want to use the weaker constraint which we have used in our paper [see Eq. (3.59)], provide 'weaker'
-# 2. If you are changing the values of 'r' (or 'E_inf') and/or 'T_Rh' from the values we have used in our paper, we advise you to use the intersection method, 
-#    which checks whether the GW spectral energy density intersects with the BBN constraint curve. Provide 'intersection' for this.
-BBN_method = 'weaker' #['weaker', 'intersection']
+# 5) BBN CONSTRAINT CHECKING METHOD
+# -----------------------------------------------------------------------------------
+#   +) Choose the method you want to use for checking the BBN constraint from the following options:
 
-# Provide the number of data points (frequency) you want in the plot of GW spectral energy density.
+#       1. piecewise    : (default) the method to check the BBN constraint is the equation which approximates the
+#                         BBN constraint integral as piecewise integrals, [see Eq. (2.64)].
+#       2. intersection : Check whether the curve of spectral energy density intersects the horizontal BBN constraint line at 1.13 * 10^{-6}.
+#       3. weaker       : To cross-check with the results in Fig. 5, 6 and 11 of our paper [https://arxiv.org/abs/2407.07956], [see Eq. (3.1)].
+
+#   +) Note that it is recommended to use the 'piecewise' method for checking the BBN constraint as it is more accurate for the general case.
+#   +) The other two methods are advised to be used only for cross-checking the results in the paper or to get a rough estimate of the BBN constraint
+#      for specific cases as mentioned in the paper.
+
+BBN_method = 'piecewise'
+# BBN_method = 'intersection'
+# BBN_method = 'weaker'
+
+
+# 6) NUMBER OF DATA POINTS
+# -----------------------------------------------------------------------------------
+#   +) Provide the number of data points (frequency) you want in the plot of GW spectral energy density in x-axis.
+
 num_of_points = 1000
 
 #################################################################################################################################################################
 
+
 # defining the values of the constants
 Omega_rad_0 = 4.16*10**(-5)                         # Present radiation density parameter (This is actually Omega_{rad, 0}*h^2) [see Eq. (E.7)]
-T_0 = 2.35*10**(-13)     #GeV                         Present temperature [https://arxiv.org/abs/0911.1955]
-m_P = 2.44*10**18        #GeV                         Reduced Planck mass
-BBN_constraint = 1.13*10**(-6)                      # Upper bound on Omega_GW from BBN observations [see Eq. (3.61)]
+T_0 = 2.35*10**(-13)     #GeV                       # Present temperature [https://arxiv.org/abs/0911.1955]
+m_P = 2.44*10**18        #GeV                       # Reduced Planck mass
+BBN_constraint = 1.13*10**(-6)                      # Upper bound on Omega_GW from BBN observations [see Eq. (2.59)]
 A_S = 2.1*10**(-9)                                  # Amplitude of scalar perturbations on CMB scales [Planck 2018: https://arxiv.org/abs/1807.06209]
 
 #................................................................................................................................................................
@@ -131,7 +164,7 @@ except NameError:
         E_inf
         # If E_inf is defined, execute this block
 
-        if E_inf >= 1.39 * 10**16: #GeV # The current upper bound on the energy scale during inflation [see Eq. (2.27)]
+        if E_inf >= 1.39 * 10**16: #GeV # The current upper bound on the energy scale during inflation [see Eq. (A.31)]
             print('The value of energy scale during inflation E_inf is greater than the current upper bound. Please provide a lower value')
             exit()
 
@@ -156,6 +189,8 @@ for i in range(len(EoS_list)):
 
 #Checking the validity of the energy scales provided
 
+Energy_list.sort(reverse=True) # Sorting the energy scales in descending order
+
 if Energy_list == []: # If reheating has only single epoch
     pass
 
@@ -175,7 +210,7 @@ else:
 #.................................................................................................................................................................
 
 # Loading the data for the effective relativistic degrees of freedom in energy and entropy. The data is in the form of [Temperature in GeV, g_star, g_s]. 
-Eff_rel_dof_data = np.loadtxt(Folder_path + '/eff_rel_dof.txt')
+Eff_rel_dof_data = np.loadtxt('eff_rel_dof.txt')
 
 # Converting the data to numpy arrays
 Temp_in_GeV = np.array(Eff_rel_dof_data[:,0])
@@ -252,13 +287,13 @@ if len(Energy_list) != 0:
 
 def freq(T):
     """Function for converting temperature in GeV to present-frequency of GWs in Hz.
-    [See Eq. (3.52)]"""
+    [See Eq. (2.50)]"""
     return 7.43 * 10**(-8) * (g_s_k(T_0)/g_s_k(T))**(1/3) * (g_star_k(T)/90)**(1/2) * T
 
 
 def E(T):
     """Function to convert temperature in GeV to energy scale of the universe in GeV.
-    [See Eq. (3.53)]"""
+    [See Eq. (2.51)]"""
     return T*(np.pi**2 * g_star_k(T)/ 30)**(1/4)
 
 
@@ -305,12 +340,12 @@ def coeff(f):
     for i in range(len(y_arr)):
         y_arr[i] = f/freq_list[i]
 
-    A_k_arr[0] = 2**(alpha_arr[0]- 1/2 ) * gamma(alpha_arr[0] + 1/2)    #A_{k, 1} [see Eq. (3.36)]
-    B_k_arr[0] = 0                                                      #B_{k, 1} [see Eq. (3.36)]
+    A_k_arr[0] = 2**(alpha_arr[0]- 1/2 ) * gamma(alpha_arr[0] + 1/2)    #A_{k, 1} [see Eq. (2.26)]
+    B_k_arr[0] = 0                                                      #B_{k, 1} [see Eq. (2.26)]
 
     for i in range(1, len(alpha_arr)):
-        an_ym = alpha_arr[i] * y_arr[i-1]       # \alpha_n * y_m, where m = n-1 [see Eq. (3.20), (3.21)]
-        am_ym = alpha_arr[i-1] * y_arr[i-1]     # \alpha_m * y_m, where m = n-1 [see Eq. (3.20), (3.21)]
+        an_ym = alpha_arr[i] * y_arr[i-1]       # \alpha_n * y_m, where m = n-1
+        am_ym = alpha_arr[i-1] * y_arr[i-1]     # \alpha_m * y_m, where m = n-1 
 
         an_m_half = alpha_arr[i] - 1/2          # \alpha_n - 1/2
         am_m_half = alpha_arr[i-1] - 1/2        # \alpha_m - 1/2
@@ -318,20 +353,20 @@ def coeff(f):
         an_p_half = alpha_arr[i] + 1/2          # \alpha_n + 1/2
         am_p_half = alpha_arr[i-1] + 1/2        # \alpha_m + 1/2
 
-        C = ((an_ym)**(an_m_half))/((am_ym)**(am_m_half)) # The coefficient in Eq. (3.18) and (3.19)
+        C = ((an_ym)**(an_m_half))/((am_ym)**(am_m_half)) # The coefficient in Eq. (2.21) and (2.22)
 
-        f_1 = mpmath.besselj(-(an_m_half), an_ym) #[see Eq. (3.16)]
-        f_2 = mpmath.besselj(-(am_m_half), am_ym) #[see Eq. (3.17)]
-        f_3 = mpmath.besselj(-(an_p_half), an_ym) #[see Eq. (3.18)]
-        f_4 = mpmath.besselj(-(am_p_half), am_ym) #[see Eq. (3.19)]
+        f_1 = mpmath.besselj(-(an_m_half), an_ym) #[see Eq. (2.17)]
+        f_2 = mpmath.besselj(-(am_m_half), am_ym) #[see Eq. (2.18)]
+        f_3 = mpmath.besselj(-(an_p_half), an_ym) #[see Eq. (2.19)]
+        f_4 = mpmath.besselj(-(am_p_half), am_ym) #[see Eq. (2.20)
 
-        g_1 = mpmath.besselj(an_m_half, an_ym) #[see Eq. (3.16)]
-        g_2 = mpmath.besselj(am_m_half, am_ym) #[see Eq. (3.17)]
-        g_3 = mpmath.besselj(an_p_half, an_ym) #[see Eq. (3.18)]
-        g_4 = mpmath.besselj(am_p_half, am_ym) #[see Eq. (3.19)]
+        g_1 = mpmath.besselj(an_m_half, an_ym) #[see Eq. (2.17)]
+        g_2 = mpmath.besselj(am_m_half, am_ym) #[see Eq. (2.18)]
+        g_3 = mpmath.besselj(an_p_half, an_ym) #[see Eq. (2.19)]
+        g_4 = mpmath.besselj(am_p_half, am_ym) #[see Eq. (2.20)]
         
         
-        Deno = f_1 * g_3 + g_1 * f_3 # Denominator in Eq. (3.20) and (3.21)
+        Deno = f_1 * g_3 + g_1 * f_3 # Denominator in Eq. (2.21) and (2.22)
 
         K = C / Deno
 
@@ -342,8 +377,8 @@ def coeff(f):
         Num_B2 = f_2 * g_3 + f_4 * g_1
 
 
-        A_k_arr[i] = K * (A_k_arr[i-1] * Num_A1 + B_k_arr[i-1] * Num_B1) # [see Eq. (3.20)]
-        B_k_arr[i] = K * (A_k_arr[i-1] * Num_A2 + B_k_arr[i-1] * Num_B2) # [see Eq. (3.21)]
+        A_k_arr[i] = K * (A_k_arr[i-1] * Num_A1 + B_k_arr[i-1] * Num_B1) # [see Eq. (2.21)]
+        B_k_arr[i] = K * (A_k_arr[i-1] * Num_A2 + B_k_arr[i-1] * Num_B2) # [see Eq. (2.22)]
 
     return A_k_arr[-1], B_k_arr[-1]
 
@@ -351,14 +386,13 @@ def coeff(f):
 
 # Relativistic correction factor at beginning of last RD epoch
 G_R = (g_star_k(Temperature_list[-2])/ g_star_k(T_0)) * (g_s_k(T_0)/g_s_k(Temperature_list[-2]))**(4/3) # (g_{*, r*}/g_{*, 0}) * (g_{s, 0}/g_{s, r*})^{4/3} 
-#[see Eq. (3.55)]
 
-const_coeff = 1/(96*(np.pi)**3) * G_R * Omega_rad_0 * (H_inf/m_P)**2 # The coefficient in Eq. (3.55)
+const_coeff = 1/(96*(np.pi)**3) * G_R * Omega_rad_0 * (H_inf/m_P)**2 # The coefficient in Eq. (2.53)
 
 #Function for calculating the spectral energy density at present time
 def Omega_GW_0(f):
     """Function to calculate the present spectral energy density of GWs for a given frequency f.
-    [See Eq. (3.55)]"""
+    [See Eq. (2.53)]"""
 
     y_eq = f/freq_list[-1] # y_eq = f/f_eq
     
@@ -369,27 +403,28 @@ vec_Omega_GW_0 = np.vectorize(Omega_GW_0)   #vectorizing the function Omega_GW_0
 
 #.................................................................................................................................................................
 
-#Loading the data for the sensitive curves. These are power-law integrated sensitivity curves (PLIS) for various GW detectors (except Planck)
+# Loading the data for the sensitive curves. These are power-law integrated sensitivity curves (PLIS) for various GW detectors (except Planck)
 # obtained from https://zenodo.org/records/3689582 in relation to the paper https://arxiv.org/abs/2002.04615. 
 
 # Column 1: Log10 of the gravitational-wave frequency f, redshifted to today, in units of Hz
 # Column 2: Log10 of the gravitational-wave energy density power spectrum h^2\Omega_PLIS
 
-DATA1 = np.loadtxt(Folder_path + "/PLIS/aLIGO.txt")
-DATA2 = np.loadtxt(Folder_path + "/PLIS/DECIGO.txt")
-DATA3 = np.loadtxt(Folder_path + "/PLIS/LISA.txt")
-DATA4 = np.loadtxt(Folder_path + "/PLIS/IPTA.txt")
-DATA5 = np.loadtxt(Folder_path + "/PLIS/BBO.txt")
-DATA6 = np.loadtxt(Folder_path + "/PLIS/Planck.txt")
-DATA7 = np.loadtxt(Folder_path + "/PLIS/LV.txt")
-DATA8 = np.loadtxt(Folder_path + "/PLIS/SKA.txt")
-DATA9 = np.loadtxt(Folder_path + "/PLIS/PPTA.txt")
-DATA10 = np.loadtxt(Folder_path + "/PLIS/ET.txt")
-DATA11 = np.loadtxt(Folder_path + "/PLIS/CE.txt")
-DATA12 = np.loadtxt(Folder_path + "/PLIS/LVK.txt")
-DATA13 = np.loadtxt(Folder_path + "/PLIS/LVO2.txt")
-DATA14 = np.loadtxt(Folder_path + "/PLIS/EPTA.txt")
-DATA15 = np.loadtxt(Folder_path + "/PLIS/NANOGrav.txt")
+
+DATA1 = np.loadtxt("PLIS/aLIGO.txt")
+DATA2 = np.loadtxt("PLIS/DECIGO.txt")
+DATA3 = np.loadtxt("PLIS/LISA.txt")
+DATA4 = np.loadtxt("PLIS/IPTA.txt")
+DATA5 = np.loadtxt("PLIS/BBO.txt")
+DATA6 = np.loadtxt("PLIS/Planck.txt")
+DATA7 = np.loadtxt("PLIS/LV.txt")
+DATA8 = np.loadtxt("PLIS/SKA.txt")
+DATA9 = np.loadtxt("PLIS/PPTA.txt")
+DATA10 = np.loadtxt("PLIS/ET.txt")
+DATA11 = np.loadtxt("PLIS/CE.txt")
+DATA12 = np.loadtxt("PLIS/LVK.txt")
+DATA13 = np.loadtxt("PLIS/LVO2.txt")
+DATA14 = np.loadtxt("PLIS/EPTA.txt")
+DATA15 = np.loadtxt("PLIS/NANOGrav.txt")
 
 # Separating the data for x and y axes
 X1 = np.array(DATA1[:,0])
@@ -489,9 +524,9 @@ Y15_DATA = 10**Y15
 
 f_inf = freq(Temp(E_inf)) #Hz # Present frequency corresponding to the energy scale during inflation
 
-start_freq = np.log10(2*10**(-20))  #Hz      #starting frequency for the plot in Log10 scale
-end_freq = np.log10(f_inf)      #Hz      #end frequency for the plot in Log10 scale
-f = np.logspace(start_freq, end_freq, num_of_points, endpoint=True, base=10.0) #Hz #frequency range for the plot
+start_freq = np.log10(2*10**(-20))#Hz       #starting frequency for the plot in Log10 scale
+end_freq = np.log10(f_inf)#Hz               #end frequency for the plot in Log10 scale
+f = np.logspace(start_freq, end_freq, num_of_points, endpoint=True, base=10.0)#Hz #frequency range for the plot
 plt.loglog(f, vec_Omega_GW_0(f), color = 'k',lw = 2, zorder = 10)
 
 #-----------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -687,7 +722,7 @@ for i in range(len(Center_arr)-2):
         rot_new = 90
     else:
         rot_new = 0
-    plt.text(x = Center_arr[i], y = 5*10**(-20), s=r"$w_{"+ f'{i+1}' +"}$ = " + f'$\mathbf{{{EoS_list[i]}}}$', rotation=rot_new, fontsize=15
+    plt.text(x = Center_arr[i], y = 5*10**(-20), s=rf"$w_{{{i+1}}}$ = $\mathbf{{{EoS_list[i]}}}$", rotation=rot_new, fontsize=15
              , color='navy', horizontalalignment='center', verticalalignment='bottom',
                  bbox={'facecolor':'white', 'edgecolor':'black', 'boxstyle':'round', 'pad':0.1, 'alpha':1, 'linewidth':0.1}, zorder=20)
 
@@ -712,13 +747,11 @@ plt.ylim(10**(-20), 5*10**(-5))
 plt.xlim(10**start_freq, 10**end_freq)
 
 plt.tick_params(direction='in')
-plt.savefig(Folder_path + "/FO_GWs_spectral_energy_density.png", bbox_inches='tight', dpi = 300)
+plt.savefig("FO_GWs_spectral_energy_density.png", bbox_inches='tight', dpi = 300)
 plt.show()
 
 #.................................................................................................................................................................
 
-
-# To check whether the GW spectral energy density intersects the aLIGO sensitivity curve
 aLIGO_curve = LineString(np.column_stack((X1_DATA, Y1_DATA))) # Creating a line string for the aLIGO sensitivity curve
 Spectrum = LineString(np.column_stack((f, vec_Omega_GW_0(f)))) # Creating a line string for the GW spectral energy density
 
@@ -726,10 +759,36 @@ Spectrum = LineString(np.column_stack((f, vec_Omega_GW_0(f)))) # Creating a line
 BBN_constraint_line = LineString([(10**start_freq, BBN_constraint), (10**end_freq, BBN_constraint)])
 
 
-# The weak BBN bound on Omega_GW from BBN observations
+f_BBN = freq(1e-3) #Hz # Present frequency of GWs corresponging to BBN 
+
+
+# Function to check the BBN constraint
+def BBN_integ_approx(freq_list, EoS_list):
+    """Function to check whether the BBN constraint is satisfied or not. This function return the piecewise integral approximation for the
+    BBN constraint integral in Eq. (2.59). The expression for this equation is given in Eq. (2.64). The function returns the approximate
+    value of the integral."""
+
+    new_freq_list = [f_inf] + freq_list[:-1] + [f_BBN]
+    new_EoS_list = EoS_list[:-1]
+
+    integral = 0
+    for i in range(len(new_freq_list)-1):
+        f1 = new_freq_list[i]
+        f2 = new_freq_list[i+1]
+        w = new_EoS_list[i]
+
+
+        alpha = 2/(1+3*w)
+
+        integral += (Omega_GW_0(f1) - Omega_GW_0(f2))/(2*(1-alpha) + np.heaviside(-abs(w-1/3), 1)) + Omega_GW_0(f1) * np.log(f1/f2) * np.heaviside(-abs(w-1/3), 1)
+
+    return integral
+
+
+# The 'weaker' BBN bound on Omega_GW from BBN observations
 def BBN_bound(EoS_list):
-    """Function to check if the BBN bound is satisfied. This function returns True if the BBN bound is satisfied, and False otherwise
-    [see Eq. (3.59)]"""
+    """Function to check if the WEAKER BBN bound is satisfied. This function returns True if the BBN bound is satisfied, and False otherwise
+    [see Eq. (3.1)]"""
 
     Omega_GW_inf = Omega_GW_0(f_inf)
     w1 = EoS_list[0]
@@ -742,6 +801,7 @@ def BBN_bound(EoS_list):
         bound = (1 - alpha1) * 2.26*10**(-6)
 
     return Omega_GW_inf <= bound
+
 
 
 formatted_Energy_list = [f'{Energy:.2e}' for Energy in Energy_list] # Formatting the energy scales to be displayed
@@ -774,7 +834,15 @@ if intersects(Spectrum, aLIGO_curve):
 else:
     print('The GW spectral energy density curve does not intersect the aLIGO sensitivity curve.')
 
-if BBN_method == 'intersection':
+
+if BBN_method == 'piecewise':
+    integral = BBN_integ_approx(freq_list, EoS_list)
+    if integral < 1.13*10**(-6):
+        print(f'The piecewise integral approximation for the BBN constraint is satisfied: {integral:.2e} < 1.13*10^(-6)')
+    else:
+        print(f'The piecewise integral approximation for the BBN constraint is not satisfied: {integral:.2e} > 1.13*10^(-6)')
+
+elif BBN_method == 'intersection':
     if intersects(Spectrum, BBN_constraint_line):
         print('The GW spectral energy density curve intersects the BBN constraint bound.')
     else:
@@ -785,6 +853,7 @@ elif BBN_method == 'weaker':
         print('The weaker BBN constraint is satisfied.')
     else:
         print('The weaker BBN constraint is not satisfied.')
+
 
 print('')
 print('--------------------------------------------------------------------------------------------------------------------------------------------------------')
