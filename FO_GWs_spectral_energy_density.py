@@ -118,7 +118,7 @@ r = 1e-3
 #       1. piecewise    : (default) the method to check the BBN constraint is the equation which approximates the
 #                         BBN constraint integral as piecewise integrals, [see Eq. (2.64)].
 #       2. intersection : Check whether the curve of spectral energy density intersects the horizontal BBN constraint line at 1.13 * 10^{-6}.
-#       3. weaker       : To cross-check with the results in Fig. 5, 6 and 11 of our paper [https://arxiv.org/abs/2407.07956], [see Eq. (3.1)].
+#       3. weaker       : To cross-check with the results in Fig. 5, 6 and 12 of our paper [https://arxiv.org/abs/2407.07956], [see Eq. (3.1)].
 
 #   +) Note that it is recommended to use the 'piecewise' method for checking the BBN constraint as it is more accurate for the general case.
 #   +) The other two methods are advised to be used only for cross-checking the results in the paper or to get a rough estimate of the BBN constraint
@@ -857,3 +857,4 @@ elif BBN_method == 'weaker':
 
 print('')
 print('--------------------------------------------------------------------------------------------------------------------------------------------------------')
+
